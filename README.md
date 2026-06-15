@@ -11,31 +11,36 @@ with zero config. It builds to static files and serves them on an HTTPS URL.
 2. Click the **Deploy to Dockhold** button above, or open
    [app.dockhold.eu/new](https://app.dockhold.eu/new), connect GitHub, and pick
    your repo.
-3. Dockhold installs dependencies, runs `npm run build`, and starts the app for
-   you. It goes live at `https://<your-app>.dockhold.app` with HTTPS handled.
+3. Dockhold builds from the [`Dockerfile`](Dockerfile) — it compiles the app to
+   static files, then serves them on `$PORT`. It goes live at
+   `https://<your-app>.dockhold.app` with HTTPS handled.
 
 Every later push to your main branch redeploys automatically.
 
 ## How it serves
 
-Two scripts in [`package.json`](package.json) do the work:
+The [`Dockerfile`](Dockerfile) does two things: `vite build` compiles the app to
+static files in `dist/`, then `serve -s dist -l $PORT` serves them with
+single-page-app fallback (so client-side routes work), bound to the port
+Dockhold assigns:
 
-```json
-"build": "vite build",
-"start": "serve -s dist -l $PORT"
+```dockerfile
+RUN npm run build
+CMD serve -s dist -l $PORT
 ```
 
-`vite build` compiles the app to static files in `dist/`. `serve -s dist`
-serves them with single-page-app fallback (so client-side routes work), bound to
-the port Dockhold assigns (`$PORT`). Listening on `$PORT` is the one rule that
-matters — never hardcode a port.
+Listening on `$PORT` is the one rule that matters — never hardcode a port. The
+same scripts live in [`package.json`](package.json) so `npm run build && npm start`
+works locally too.
 
 ## Environment variables
 
-Vite only exposes variables prefixed with `VITE_` to the browser, and inlines
-them **at build time**. Set them in the dashboard *before* you deploy. Never put
-a secret behind `VITE_` — it ships to every visitor. See
-[`.env.example`](.env.example).
+Vite inlines `VITE_`-prefixed variables into the bundle **at build time**, so
+they must be present when the Dockerfile runs `npm run build`. Put non-secret
+public values in a committed `.env.production` (Vite reads it during the build) —
+see [`.env.example`](.env.example). Dashboard variables are injected at *runtime*,
+which a pre-built static bundle can't read, so they don't apply here. Never put a
+secret behind `VITE_` — it ships to every visitor.
 
 ## Run it locally
 
