@@ -1,9 +1,4 @@
 export default function App() {
-  // VITE_ vars are inlined at build time and shipped to the browser — never
-  // put a secret behind this prefix. Set VITE_API_URL in the dashboard before
-  // deploying so it's present when `vite build` runs.
-  const apiUrl = import.meta.env.VITE_API_URL ?? '(not set)'
-
   return (
     <main>
       <h1>It's live.</h1>
@@ -16,7 +11,8 @@ export default function App() {
         redeploys on its own.
       </p>
       <p className="muted">
-        <code>VITE_API_URL</code>: <code>{apiUrl}</code>
+        Need to call an API? Read its URL at runtime from a dashboard variable —
+        see the full-stack recipe. Don't bake config into the build.
       </p>
       <a className="cta" href="https://dockhold.eu/docs/recipes/deploy-a-vite-react-app">
         How this works &rarr;

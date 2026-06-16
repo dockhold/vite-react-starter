@@ -33,14 +33,18 @@ Listening on `$PORT` is the one rule that matters — never hardcode a port. The
 same scripts live in [`package.json`](package.json) so `npm run build && npm start`
 works locally too.
 
-## Environment variables
+## Configuration
 
-Vite inlines `VITE_`-prefixed variables into the bundle **at build time**, so
-they must be present when the Dockerfile runs `npm run build`. Put non-secret
-public values in a committed `.env.production` (Vite reads it during the build) —
-see [`.env.example`](.env.example). Dashboard variables are injected at *runtime*,
-which a pre-built static bundle can't read, so they don't apply here. Never put a
-secret behind `VITE_` — it ships to every visitor.
+A basic SPA needs none. To configure it from the dashboard — an API URL, for
+example — use **runtime config**: a static build has no server, so it can't read
+dashboard variables directly. Instead, have the container write your dashboard
+values into the page when it starts and read them from `window.__APP_CONFIG__`.
+The [fullstack-web template](https://github.com/dockhold/fullstack-web) shows the
+exact setup, and the
+[full-stack recipe](https://dockhold.eu/docs/recipes/deploy-a-full-stack-app)
+walks through it. Set and change values in the dashboard with no rebuild — don't
+bake config into the build with a committed `.env.production`, and never put a
+secret in browser code, since anything shipped to the browser is public.
 
 ## Run it locally
 
