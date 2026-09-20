@@ -8,7 +8,7 @@ with zero config. It builds to static files and serves them on an HTTPS URL.
 ## Deploy it
 
 1. Click **Use this template** (or fork this repo) to get your own copy.
-2. Click the **Deploy to Dockhold** button above, or open
+2. Click the **Deploy on Dockhold** button above, or open
    [app.dockhold.eu/new](https://app.dockhold.eu/new), connect GitHub, and pick
    your repo.
 3. Dockhold builds from the [`Dockerfile`](Dockerfile) — it compiles the app to
